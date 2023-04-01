@@ -1,0 +1,4 @@
+std_msgs/string frame_a
+std_msgs/string frame_b
+---
+geometry_msgs/Pose pose
