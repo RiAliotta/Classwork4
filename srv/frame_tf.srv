@@ -1,4 +1,4 @@
-std_msgs/string frame_a
-std_msgs/string frame_b
+std_msgs/String frame_a
+std_msgs/String frame_b
 ---
 geometry_msgs/Pose pose

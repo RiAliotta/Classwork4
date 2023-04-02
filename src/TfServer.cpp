@@ -15,11 +15,14 @@ using namespace std;
 //				   the output of the service to fill
 bool service_callback( cw4::frame_tf::Request &req, cw4::frame_tf::Response &res) {
 
+    tf::StampedTransform transform;
+    tf::TransformListener listener;
 
 	cout << "Starting frame: " << req.frame_a << "\tEnd frame: " << req.frame_b;
 
     try {
-        listener.lookupTransform(req.frame_a, req.frame_b, ros::Time(0), transform);
+        listener.waitForTransform(req.frame_a.data, req.frame_b.data, ros::Time(0), ros::Duration(1.0));
+        listener.lookupTransform(req.frame_a.data, req.frame_b.data, ros::Time(0), transform);
     }
     catch (tf::TransformException ex){
         ROS_ERROR("%s",ex.what());
@@ -27,10 +30,13 @@ bool service_callback( cw4::frame_tf::Request &req, cw4::frame_tf::Response &res
         return false;
     }
 
-    res.Point.x = transform.getOrigin().x();
-    res.Point.y = transform.getOrigin().y();
-    res.Point.z = transform.getOrigin().z();
-    res.Quaternion.rpy(transform.getRotation().x(), transform.getRotation().y(), transform.getRotation().z());
+    res.pose.position.x = transform.getOrigin().x();
+    res.pose.position.y = transform.getOrigin().y();
+    res.pose.position.z = transform.getOrigin().z();
+    res.pose.orientation.x = transform.getRotation().x();
+    res.pose.orientation.y = transform.getRotation().y();
+    res.pose.orientation.z = transform.getRotation().z();
+    res.pose.orientation.w = transform.getRotation().w();
 
 	return true;
 }
@@ -38,16 +44,14 @@ bool service_callback( cw4::frame_tf::Request &req, cw4::frame_tf::Response &res
 
 int main(int argc, char **argv) {
 
-	ros::init(argc, argv, "frame_service");
+	ros::init(argc, argv, "frame_server");
 	ros::NodeHandle n;   
 
-    tf::TransformListener listener;
-    tf::StampedTransform transform;
     ros::Rate rate(100);
 
 	//Initialize the service object: name of the service and callback function
 	//	Like subscribers, also the callback function can be declared as a class function
-	ros::ServiceServer service = n.advertiseService("frame_tf", service_callback);
+	ros::ServiceServer service = n.advertiseService("frame_service", service_callback);
 
 
 	//Call the spin function to maintain the node alive

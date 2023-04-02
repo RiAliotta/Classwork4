@@ -124,10 +124,12 @@ include_directories(
 )
 
 add_executable(TfServer src/TfServer.cpp)
-target_link_libraries( TfServer ${catkin_LIBRARIES})
+target_link_libraries( TfServer 
+${catkin_LIBRARIES})
 
 add_executable(TfDynamic src/TfDynamic.cpp)
-target_link_libraries( TfDynamic ${catkin_LIBRARIES})
+target_link_libraries( TfDynamic 
+${catkin_LIBRARIES})
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
